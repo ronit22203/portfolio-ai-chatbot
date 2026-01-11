@@ -35,12 +35,17 @@ if prompt := st.chat_input("Ask me about Ronit's projects..."):
 
     # 3. Retrieval Augmented Generation (RAG)
     with st.chat_message("assistant"):
-        # Get Embeddings from Azure
-        embed = o_client.embeddings(model="nomic-embed-text", prompt=prompt)['embedding']
-        
-        # Search Qdrant Cloud
-        docs = q_client.search(collection_name="portfolio_brain", query_vector=embed, limit=3)
-        context = "\n".join([d.payload['content'] for d in docs])
+        try:
+            # Get Embeddings from Azure
+            embed = o_client.embeddings(model="nomic-embed-text", prompt=prompt)['embedding']
+            
+            # Search Qdrant Cloud
+            st.write(f"Embedding Length: {len(embed)}") # Should be 768
+            docs = q_client.search(collection_name="portfolio_brain", query_vector=embed, limit=3)
+            context = "\n".join([d.payload['content'] for d in docs])
+        except Exception as e:
+            st.error(f"Error retrieving context: {str(e)}")
+            context = "No portfolio context available yet."
 
         # Generate Response using Llama 3.2 1B
         response_stream = o_client.chat(
