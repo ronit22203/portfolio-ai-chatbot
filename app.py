@@ -48,7 +48,7 @@ if prompt := st.chat_input("Ask me about Ronit's projects..."):
 
         # Generate Response using Llama 3.2 1B
         response_stream = o_client.chat(
-            model='llama3.2:1b',
+            model='smollm2:135m',
             messages=[
                 {'role': 'system', 'content': f"You are Ronit's Assistant. Context: {context}"},
                 {'role': 'user', 'content': prompt},
