@@ -40,8 +40,7 @@ if prompt := st.chat_input("Ask me about Ronit's projects..."):
             embed = o_client.embeddings(model="nomic-embed-text", prompt=prompt)['embedding']
             
             # Search Qdrant Cloud
-            st.write(f"Embedding Length: {len(embed)}") # Should be 768
-            docs = q_client.search(collection_name="portfolio_brain", query_vector=embed, limit=3)
+            docs = q_client.query(collection_name="portfolio_brain", query_vector=embed, limit=3)
             context = "\n".join([d.payload['content'] for d in docs])
         except Exception as e:
             st.error(f"Error retrieving context: {str(e)}")
